@@ -1,20 +1,22 @@
-#IDE files
+# IDE files
 .idea/
 *.iml
-#Build output
+
+# Build output
 out/
 bin/
-#Java compiled bytecode
+production/
+
+# Compiled Java files
 *.class
-#Jar files
-*.jar
-!lib/mysql-connector-j.jar
-#OS temporary files
-.DS_Store
-Thumbs.db
 
 # Database credentials
 **/db.properties
 
-# Generated production files
-production/
+# OS temporary files
+.DS_Store
+Thumbs.db
+
+# Keep MySQL connector if required
+*.jar
+!lib/mysql-connector-j.jar
