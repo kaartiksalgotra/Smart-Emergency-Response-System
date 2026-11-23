@@ -25,8 +25,24 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Notification(int notificationId, int userId, int emergencyId,
+                        String message, String notificationType, boolean isRead,
+                        LocalDateTime createdAt) {
+        this.notificationId = notificationId;
+        this.userId = userId;
+        this.emergencyId = emergencyId;
+        this.message = message;
+        this.notificationType = notificationType;
+        this.isRead = isRead;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    }
+
     public int getNotificationId() {
         return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
     }
 
     public int getUserId() {

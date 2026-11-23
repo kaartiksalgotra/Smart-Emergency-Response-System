@@ -46,6 +46,20 @@ public class EmergencyQueue {
         }
     }
 
+    /**
+     * Loads all pending (REQUESTED) emergencies from storage into the PriorityQueue.
+     * Ensures database records are placed into the in-memory PriorityQueue.
+     */
+    public void loadPendingFromStorage(com.emergency.storage.EmergencyStorage storage) {
+        if (storage == null) return;
+        ArrayList<Emergency> list = storage.getAllEmergencies();
+        for (Emergency em : list) {
+            if (em.getStatus() == EmergencyStatus.REQUESTED) {
+                addEmergency(em);
+            }
+        }
+    }
+
     public Emergency pollEmergency() {
         return queue.poll();
     }

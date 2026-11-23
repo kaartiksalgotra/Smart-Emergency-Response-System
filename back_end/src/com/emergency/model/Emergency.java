@@ -38,6 +38,23 @@ public class Emergency {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Emergency(int emergencyId, int userId, EmergencyType emergencyType,
+                     PriorityLevel priority, String location, String description,
+                     int affectedPeople, EmergencyStatus status,
+                     LocalDateTime createdAt, LocalDateTime updatedAt) {
+
+        this.emergencyId = emergencyId;
+        this.userId = userId;
+        this.emergencyType = emergencyType;
+        this.priority = priority;
+        this.location = location;
+        this.description = description;
+        this.affectedPeople = affectedPeople;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public int getEmergencyId() { return emergencyId; }
     public void setEmergencyId(int emergencyId) { this.emergencyId = emergencyId; }
 
@@ -82,4 +99,17 @@ public class Emergency {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Emergency emergency = (Emergency) o;
+        return emergencyId == emergency.emergencyId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(emergencyId);
+    }
 }

@@ -90,8 +90,16 @@ public class AdminDashboardController {
 
     private void openPriorityQueue() {
         PriorityQueueView queueView = new PriorityQueueView();
-        Runnable load = () -> queueView.setQueueList(emergencyProcessor != null && emergencyProcessor.getEmergencyQueue() != null
-                ? emergencyProcessor.getEmergencyQueue().getQueueAsSortedList() : emergencyService.getRequestedEmergencies());
+        Runnable load = () -> {
+            if (emergencyProcessor != null && emergencyProcessor.getEmergencyQueue() != null) {
+                for (Emergency em : emergencyService.getRequestedEmergencies()) {
+                    emergencyProcessor.getEmergencyQueue().addEmergency(em);
+                }
+                queueView.setQueueList(emergencyProcessor.getEmergencyQueue().getQueueAsSortedList());
+            } else {
+                queueView.setQueueList(emergencyService.getRequestedEmergencies());
+            }
+        };
         load.run();
         queueView.getRefreshButton().setOnAction(e -> load.run());
         dashboardView.setContent(queueView.getView());

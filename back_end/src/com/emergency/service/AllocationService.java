@@ -108,6 +108,7 @@ public class AllocationService {
                     resourceStorage.updateResource(resource);
                 }
                 allocation.releaseAllocation();
+                allocationStorage.updateAllocation(allocation);
                 return true;
             }
         }

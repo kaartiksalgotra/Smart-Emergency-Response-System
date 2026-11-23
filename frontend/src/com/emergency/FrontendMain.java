@@ -50,6 +50,7 @@ public class FrontendMain extends Application {
         dashboardService = new DashboardService(emergencyStorage, resourceStorage);
 
         emergencyQueue = new EmergencyQueue();
+        emergencyQueue.loadPendingFromStorage(emergencyStorage);
         emergencyProcessor = new EmergencyProcessor(emergencyQueue, allocationService);
         emergencyProcessor.startProcessing();
 

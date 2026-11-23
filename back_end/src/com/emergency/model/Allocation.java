@@ -20,6 +20,16 @@ public class Allocation {
         this.active = true;
     }
 
+    public Allocation(int allocationId, int emergencyId, int resourceId,
+                      LocalDateTime assignedAt, LocalDateTime releasedAt, boolean active) {
+        this.allocationId = allocationId;
+        this.emergencyId = emergencyId;
+        this.resourceId = resourceId;
+        this.assignedAt = assignedAt;
+        this.releasedAt = releasedAt;
+        this.active = active;
+    }
+
     public int getAllocationId() { return allocationId; }
     public void setAllocationId(int allocationId) { this.allocationId = allocationId; }
 

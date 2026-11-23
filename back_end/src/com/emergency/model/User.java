@@ -28,6 +28,19 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
+    public User(int userId, String userCode, String name, String email, String phone,
+                String passwordHash, String passwordSalt, UserRole role, LocalDateTime createdAt) {
+        this.userId = userId;
+        this.userCode = userCode;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+        this.role = role;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+    }
+
     public User(int userId, String name, String email, String phone,
                 String passwordHash, String passwordSalt, UserRole role) {
         this(userId, (role == UserRole.ADMIN ? "ADMIN" : "USER") + String.format("%03d", userId),

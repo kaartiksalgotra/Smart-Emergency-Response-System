@@ -4,6 +4,7 @@ target/
 *.class
 .idea/
 *.iml
+reports/
 
 # DO NOT ignore the library JARs so classmates can run it
 !lib/

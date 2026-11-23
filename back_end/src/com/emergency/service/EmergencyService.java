@@ -106,4 +106,12 @@ public class EmergencyService {
         emergency.setStatus(EmergencyStatus.CANCELLED);
         return emergencyStorage.updateEmergency(emergency);
     }
+
+    public ArrayList<com.emergency.model.EmergencyStatusHistory> getStatusHistoryByEmergencyId(int emergencyId) {
+        return emergencyStorage.getStatusHistoryByEmergencyId(emergencyId);
+    }
+
+    public ArrayList<com.emergency.model.EmergencyStatusHistory> getAllStatusHistory() {
+        return emergencyStorage.getAllStatusHistory();
+    }
 }

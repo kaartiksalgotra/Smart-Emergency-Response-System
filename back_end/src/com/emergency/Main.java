@@ -84,6 +84,7 @@ public class Main {
 
         EmergencyQueue emergencyQueue =
                 new EmergencyQueue();
+        emergencyQueue.loadPendingFromStorage(emergencyStorage);
 
         EmergencyProcessor emergencyProcessor =
                 new EmergencyProcessor(
