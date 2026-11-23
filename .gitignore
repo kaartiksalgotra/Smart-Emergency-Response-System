@@ -12,3 +12,9 @@ bin/
 #OS temporary files
 .DS_Store
 Thumbs.db
+
+# Database credentials
+**/db.properties
+
+# Generated production files
+production/
