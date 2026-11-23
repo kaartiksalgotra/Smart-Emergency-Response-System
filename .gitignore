@@ -1,0 +1,14 @@
+#IDE files
+.idea/
+*.iml
+#Build output
+out/
+bin/
+#Java compiled bytecode
+*.class
+#Jar files
+*.jar
+!lib/mysql-connector-j.jar
+#OS temporary files
+.DS_Store
+Thumbs.db
