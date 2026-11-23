@@ -1,0 +1,11 @@
+# Ignore compiler outputs and IDE caches
+out/
+target/
+*.class
+.idea/
+*.iml
+
+# DO NOT ignore the library JARs so classmates can run it
+!lib/
+!lib/*.jar
+!lib/**/*.jar
