@@ -6,7 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 /**
- * Modern Registration Screen with role selection (Citizen / Admin).
+ * ERAS Registration Screen with role selection (Citizen / Admin).
+ * Restyled with modern vibrant blue gradient (#38BDF8 to #2563EB) and clean card layout.
  */
 public class RegisterView {
 
@@ -24,123 +25,125 @@ public class RegisterView {
     public RegisterView() {
         root = new StackPane();
         root.getStyleClass().add("main-container");
-        root.setStyle("-fx-background-color: #0F172A;");
+        root.setStyle("-fx-background-color: #F8FAFC;");
 
         try {
             root.getStylesheets().add(getClass().getResource("/com/emergency/css/style.css").toExternalForm());
         } catch (Exception ignored) {}
 
-        // Left Column: Citizen Portal Benefits
+        // Left Column: Modern Blue Gradient Branding
         VBox heroSection = new VBox(16);
         heroSection.setAlignment(Pos.CENTER_LEFT);
         heroSection.setPadding(new Insets(35));
         heroSection.setPrefWidth(360);
-        heroSection.setStyle("-fx-background-color: #0F172A; -fx-background-radius: 12px 0 0 12px;");
+        heroSection.setStyle("-fx-background-color: linear-gradient(to bottom right, #38BDF8, #2563EB); -fx-background-radius: 16px 0 0 16px;");
 
-        Label badgeLabel = new Label("EMERGENCY RESPONSE NETWORK");
-        badgeLabel.setStyle("-fx-background-color: rgba(37,99,235,0.2); -fx-text-fill: #60A5FA; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 4px 10px; -fx-background-radius: 20px;");
+        // Logo
+        HBox logoBox = new HBox(10);
+        logoBox.setAlignment(Pos.CENTER_LEFT);
+        StackPane square = new StackPane();
+        square.setStyle("-fx-background-color: rgba(255,255,255,0.22); -fx-background-radius: 8px; -fx-min-width: 36px; -fx-min-height: 36px;");
+        Label plus = new Label("+");
+        plus.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
+        square.getChildren().add(plus);
+
+        Label brand = new Label("ERAS");
+        brand.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;");
+        logoBox.getChildren().addAll(square, brand);
 
         Label brandTitle = new Label("Create Response\nAccount");
         brandTitle.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #FFFFFF;");
 
         Label brandDesc = new Label("Register as a Citizen to report emergencies, or as an Admin to coordinate emergency dispatch.");
         brandDesc.setWrapText(true);
-        brandDesc.setStyle("-fx-font-size: 12px; -fx-text-fill: #94A3B8;");
+        brandDesc.setStyle("-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.85);");
 
         VBox benefitsList = new VBox(10,
-                createBenefitItem("Instant incident reporting & priority queueing"),
-                createBenefitItem("Real-time ambulance, fire & rescue dispatch"),
-                createBenefitItem("Role-based access: Citizen or System Admin"),
-                createBenefitItem("Secure account credentials and notification alerts")
+                createBenefitItem("Instant Emergency Request Dispatch"),
+                createBenefitItem("Live Status Lifecycle Notifications"),
+                createBenefitItem("Direct Ambulance, Fire & Rescue Access"),
+                createBenefitItem("Transparent Response Time Tracking")
         );
-        heroSection.getChildren().addAll(badgeLabel, brandTitle, brandDesc, benefitsList);
+        heroSection.getChildren().addAll(logoBox, brandTitle, brandDesc, benefitsList);
 
-        // Right Column: Registration Form
+        // Right Column: Form
         VBox formSection = new VBox(8);
         formSection.setAlignment(Pos.CENTER_LEFT);
         formSection.setPadding(new Insets(24, 30, 24, 30));
-        formSection.setPrefWidth(420);
-        formSection.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 0 12px 12px 0;");
+        formSection.setPrefWidth(440);
+        formSection.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 0 16px 16px 0; -fx-border-color: #E2E8F0; -fx-border-width: 1px 1px 1px 0;");
 
-        Label registerHeading = new Label("Create an Account");
-        registerHeading.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0F172A;");
-        Label registerSub = new Label("Select your role and enter your details");
-        registerSub.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748B;");
+        Label regHeading = new Label("Create an Account");
+        regHeading.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1E293B;");
+
+        nameField = new TextField();
+        nameField.setPromptText("Enter your full legal name");
+
+        emailField = new TextField();
+        emailField.setPromptText("Enter your active email address");
+
+        phoneField = new TextField();
+        phoneField.setPromptText("10-digit mobile number");
+
+        passwordField = new PasswordField();
+        passwordField.setPromptText("At least 6 characters");
+
+        confirmPasswordField = new PasswordField();
+        confirmPasswordField.setPromptText("Repeat password");
 
         roleBox = new ComboBox<>();
         roleBox.getItems().addAll("Citizen / User", "Admin");
         roleBox.setValue("Citizen / User");
         roleBox.setMaxWidth(Double.MAX_VALUE);
-        roleBox.setPrefHeight(34);
 
-        nameField = new TextField();
-        nameField.setPromptText("Full Name");
-        nameField.setPrefHeight(34);
-
-        emailField = new TextField();
-        emailField.setPromptText("Email Address");
-        emailField.setPrefHeight(34);
-
-        phoneField = new TextField();
-        phoneField.setPromptText("10-Digit Phone Number");
-        phoneField.setPrefHeight(34);
-
-        passwordField = new PasswordField();
-        passwordField.setPromptText("Password (min 6 chars)");
-        passwordField.setPrefHeight(34);
-
-        confirmPasswordField = new PasswordField();
-        confirmPasswordField.setPromptText("Confirm Password");
-        confirmPasswordField.setPrefHeight(34);
-
-        registerButton = new Button("Create Account");
-        registerButton.getStyleClass().add("btn-danger");
+        registerButton = new Button("Complete Registration");
+        registerButton.getStyleClass().add("btn-primary");
         registerButton.setMaxWidth(Double.MAX_VALUE);
         registerButton.setPrefHeight(38);
 
         messageLabel = new Label("");
         messageLabel.setWrapText(true);
-        messageLabel.getStyleClass().add("msg-error");
+        messageLabel.setStyle("-fx-text-fill: #DC2626; -fx-font-weight: bold; -fx-font-size: 11px;");
 
-        loginButton = new Button("Sign In Here");
+        loginButton = new Button("Sign In");
         loginButton.setStyle("-fx-text-fill: #2563EB; -fx-font-weight: bold; -fx-background-color: transparent; -fx-cursor: hand;");
-        HBox loginBox = new HBox(6, new Label("Already registered?"), loginButton);
+        HBox loginBox = new HBox(6, new Label("Already have an account?"), loginButton);
         loginBox.setAlignment(Pos.CENTER);
 
         formSection.getChildren().addAll(
-                registerHeading, registerSub,
-                new VBox(2, new Label("Register As (Role)"), roleBox),
-                new VBox(2, new Label("Full Name"), nameField),
-                new VBox(2, new Label("Email Address"), emailField),
-                new VBox(2, new Label("Phone Number"), phoneField),
-                new VBox(2, new Label("Password"), passwordField),
-                new VBox(2, new Label("Confirm Password"), confirmPasswordField),
+                regHeading,
+                new VBox(1, new Label("Account Type (Role)"), roleBox),
+                new VBox(1, new Label("Full Name"), nameField),
+                new VBox(1, new Label("Email Address"), emailField),
+                new VBox(1, new Label("Phone Number"), phoneField),
+                new VBox(1, new Label("Password"), passwordField),
+                new VBox(1, new Label("Confirm Password"), confirmPasswordField),
                 registerButton, messageLabel, loginBox
         );
 
         HBox authCard = new HBox(heroSection, formSection);
         authCard.setAlignment(Pos.CENTER);
-        authCard.setMaxWidth(780);
-        authCard.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 16, 0, 0, 4);");
+        authCard.setMaxWidth(800);
+        authCard.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 18, 0, 0, 4);");
 
         root.getChildren().add(authCard);
     }
 
     private HBox createBenefitItem(String text) {
         Label icon = new Label("✓");
-        icon.setStyle("-fx-text-fill: #60A5FA; -fx-font-weight: bold; -fx-font-size: 12px;");
+        icon.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 12px;");
         Label label = new Label(text);
-        label.setStyle("-fx-text-fill: #E2E8F0; -fx-font-size: 11px;");
+        label.setStyle("-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 11px;");
         return new HBox(8, icon, label);
     }
 
     public StackPane getView() { return root; }
-    public ComboBox<String> getRoleBox() { return roleBox; }
     public TextField getNameField() { return nameField; }
     public TextField getEmailField() { return emailField; }
     public TextField getPhoneField() { return phoneField; }
     public PasswordField getPasswordField() { return passwordField; }
     public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
+    public ComboBox<String> getRoleBox() { return roleBox; }
     public Button getRegisterButton() { return registerButton; }
     public Button getLoginButton() { return loginButton; }
     public Label getMessageLabel() { return messageLabel; }

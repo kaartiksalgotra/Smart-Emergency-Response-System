@@ -9,18 +9,16 @@ import javafx.scene.layout.*;
 
 /**
  * Emergency Reporting View Component.
- * Embedded seamlessly into the Fixed Dashboard layout.
+ * Polished layout centered at max-width 780px with uniform button & label styling.
  */
 public class ReportEmergencyView {
 
     private BorderPane root;
-
     private ComboBox<EmergencyType> emergencyTypeBox;
     private ComboBox<PriorityLevel> priorityBox;
     private TextField locationField;
     private TextField affectedPeopleField;
     private TextArea descriptionField;
-
     private Button submitButton;
     private Button backButton;
     private Label messageLabel;
@@ -29,41 +27,43 @@ public class ReportEmergencyView {
         root = new BorderPane();
         root.setStyle("-fx-background-color: #F8FAFC;");
 
-        // Top Header
-        HBox topBar = new HBox(16);
-        topBar.getStyleClass().add("top-header-bar");
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPrefHeight(60);
-
+        // Top Header Bar
         backButton = new Button("← Return to Dashboard");
         backButton.getStyleClass().add("btn-back");
 
         Label title = new Label("Report Emergency Incident");
         title.getStyleClass().add("top-header-title");
 
-        topBar.getChildren().addAll(backButton, title);
+        HBox headerContent = new HBox(16, backButton, title);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        headerContent.setMaxWidth(1200);
+        HBox.setHgrow(headerContent, Priority.ALWAYS);
+
+        HBox topBar = new HBox(headerContent);
+        topBar.getStyleClass().add("top-header-bar");
+        topBar.setAlignment(Pos.CENTER);
         root.setTop(topBar);
 
-        // Center Form
-        VBox contentBox = new VBox(16);
-        contentBox.getStyleClass().add("content-pane");
+        // Center Content Container (centered, max-width 780px)
+        VBox contentBox = new VBox(20);
         contentBox.setAlignment(Pos.TOP_CENTER);
-        contentBox.setMaxWidth(720);
+        contentBox.setMaxWidth(780);
+        contentBox.setPadding(new Insets(28, 20, 36, 20));
 
-        // Alert notice
-        Label alertNotice = new Label("⚠️ PRIORITY NOTICE: For life-threatening emergencies, specify precise location and choose CRITICAL priority.");
-        alertNotice.setStyle("-fx-background-color: #FEF2F2; -fx-text-fill: #991B1B; -fx-padding: 10px 14px; -fx-background-radius: 6px; -fx-font-weight: bold; -fx-font-size: 11px;");
+        // Alert Notice with Clean Unicode Warning Icon
+        Label alertNotice = new Label("PRIORITY NOTICE: For life-threatening emergencies, specify precise location and choose CRITICAL priority.");
+        alertNotice.setStyle("-fx-background-color: #FEF2F2; -fx-text-fill: #991B1B; -fx-padding: 12px 16px; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-font-size: 11px; -fx-border-color: #FECACA; -fx-border-radius: 8px;");
         alertNotice.setMaxWidth(Double.MAX_VALUE);
 
         // Form Card
-        VBox formCard = new VBox(14);
+        VBox formCard = new VBox(16);
         formCard.getStyleClass().add("card");
-        formCard.setPadding(new Insets(24));
+        formCard.setPadding(new Insets(26));
 
         Label formTitle = new Label("Incident Details");
         formTitle.getStyleClass().add("section-title");
 
-        // Form fields
+        // Form Fields with clear visible labels
         emergencyTypeBox = new ComboBox<>();
         emergencyTypeBox.getItems().addAll(EmergencyType.values());
         emergencyTypeBox.setPromptText("Select emergency type");
@@ -80,12 +80,12 @@ public class ReportEmergencyView {
         grid.setHgap(16);
         grid.setVgap(14);
 
-        VBox typeBox = new VBox(4, new Label("Emergency Type"), emergencyTypeBox);
-        VBox priorityContainer = new VBox(4, new Label("Priority Level"), priorityBox);
+        VBox typeBox = new VBox(6, makeLabel("Emergency Type"), emergencyTypeBox);
+        VBox prioBox = new VBox(6, makeLabel("Priority Level"), priorityBox);
         GridPane.setHgrow(typeBox, Priority.ALWAYS);
-        GridPane.setHgrow(priorityContainer, Priority.ALWAYS);
+        GridPane.setHgrow(prioBox, Priority.ALWAYS);
         grid.add(typeBox, 0, 0);
-        grid.add(priorityContainer, 1, 0);
+        grid.add(prioBox, 1, 0);
 
         locationField = new TextField();
         locationField.setPromptText("e.g. 123 Main St, Near Central Station");
@@ -95,8 +95,8 @@ public class ReportEmergencyView {
         affectedPeopleField.setPromptText("e.g. 2");
         affectedPeopleField.setPrefHeight(38);
 
-        VBox locBox = new VBox(4, new Label("Incident Location"), locationField);
-        VBox affBox = new VBox(4, new Label("Number of Affected People"), affectedPeopleField);
+        VBox locBox = new VBox(6, makeLabel("Incident Location"), locationField);
+        VBox affBox = new VBox(6, makeLabel("Number of Affected People"), affectedPeopleField);
         GridPane.setHgrow(locBox, Priority.ALWAYS);
         GridPane.setHgrow(affBox, Priority.ALWAYS);
         grid.add(locBox, 0, 1);
@@ -104,13 +104,13 @@ public class ReportEmergencyView {
 
         descriptionField = new TextArea();
         descriptionField.setPromptText("Describe the nature of the emergency and any special hazards...");
-        descriptionField.setPrefHeight(90);
+        descriptionField.setPrefHeight(95);
         descriptionField.setWrapText(true);
 
         submitButton = new Button("Submit Emergency & Dispatch");
         submitButton.getStyleClass().add("btn-danger");
         submitButton.setPrefHeight(40);
-        submitButton.setPrefWidth(240);
+        submitButton.setPrefWidth(260);
 
         messageLabel = new Label("");
         messageLabel.setWrapText(true);
@@ -119,17 +119,27 @@ public class ReportEmergencyView {
         formCard.getChildren().addAll(
                 formTitle,
                 grid,
-                new VBox(4, new Label("Emergency Description"), descriptionField),
+                new VBox(6, makeLabel("Emergency Description"), descriptionField),
                 submitButton,
                 messageLabel
         );
 
         contentBox.getChildren().addAll(alertNotice, formCard);
 
-        ScrollPane scroll = new ScrollPane(contentBox);
+        StackPane centerWrapper = new StackPane(contentBox);
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
+        centerWrapper.setStyle("-fx-background-color: #F8FAFC;");
+
+        ScrollPane scroll = new ScrollPane(centerWrapper);
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;");
         root.setCenter(scroll);
+    }
+
+    private Label makeLabel(String text) {
+        Label lbl = new Label(text);
+        lbl.getStyleClass().add("field-label");
+        return lbl;
     }
 
     public BorderPane getView() { return root; }

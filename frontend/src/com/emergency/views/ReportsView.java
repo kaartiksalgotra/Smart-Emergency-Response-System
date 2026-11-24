@@ -9,20 +9,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 
 /**
- * Reports and Analytics View Component.
- * Generates CSV audit reports for incidents, allocations, and resources.
+ * ERAS Reports & Analytics View.
+ * Modern export dashboard centered in 1200px container with uniform button styling.
  */
 public class ReportsView {
-
     private BorderPane root;
-
-    private Button allEmergenciesButton;
-    private Button pendingEmergenciesButton;
-    private Button resolvedEmergenciesButton;
-    private Button allocationReportButton;
-    private Button resourceReportButton;
-    private Button backButton;
-
+    private Button allEmergenciesButton, pendingEmergenciesButton, resolvedEmergenciesButton, allocationReportButton, resourceReportButton, backButton;
     private Label messageLabel;
 
     public ReportsView() {
@@ -30,92 +22,82 @@ public class ReportsView {
         root.setStyle("-fx-background-color: #F8FAFC;");
 
         // Top Header
-        HBox topBar = new HBox(16);
-        topBar.getStyleClass().add("top-header-bar");
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPrefHeight(60);
-
-        backButton = new Button("← Return to Dashboard");
+        backButton = new Button("← Back to Dashboard");
         backButton.getStyleClass().add("btn-back");
 
         Label heading = new Label("Reports & Analytics Center");
         heading.getStyleClass().add("top-header-title");
 
-        topBar.getChildren().addAll(backButton, heading);
+        Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label adminPill = new Label("Admin View");
+        adminPill.setStyle("-fx-background-color: #DBEAFE; -fx-text-fill: #2563EB; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 12px; -fx-font-size: 11px;");
+
+        HBox headerContent = new HBox(16, backButton, heading, spacer, adminPill);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        headerContent.setMaxWidth(1200);
+        HBox.setHgrow(headerContent, Priority.ALWAYS);
+
+        HBox topBar = new HBox(headerContent);
+        topBar.getStyleClass().add("top-header-bar");
+        topBar.setAlignment(Pos.CENTER);
         root.setTop(topBar);
 
-        // Center Content
+        // Center Content (centered, max-width 880px)
         VBox contentBox = new VBox(18);
-        contentBox.getStyleClass().add("content-pane");
+        contentBox.setPadding(new Insets(28, 20, 36, 20));
         contentBox.setAlignment(Pos.TOP_CENTER);
-        contentBox.setMaxWidth(850);
+        contentBox.setMaxWidth(880);
 
         messageLabel = new Label("Click an export button below to generate a standardized CSV report.");
         messageLabel.setWrapText(true);
-        messageLabel.setStyle("-fx-background-color: #EFF6FF; -fx-padding: 10px 16px; -fx-background-radius: 6px; -fx-text-fill: #1E40AF; -fx-font-weight: bold;");
+        messageLabel.setStyle("-fx-background-color: #EFF6FF; -fx-padding: 12px 18px; -fx-background-radius: 8px; -fx-text-fill: #2563EB; -fx-font-weight: bold; -fx-border-color: #BFDBFE; -fx-border-radius: 8px;");
         messageLabel.setMaxWidth(Double.MAX_VALUE);
 
-        allEmergenciesButton = new Button("Generate CSV");
-        allEmergenciesButton.getStyleClass().add("btn-primary");
+        allEmergenciesButton = createExportBtn();
+        pendingEmergenciesButton = createExportBtn();
+        resolvedEmergenciesButton = createExportBtn();
+        allocationReportButton = createExportBtn();
+        resourceReportButton = createExportBtn();
 
-        pendingEmergenciesButton = new Button("Generate CSV");
-        pendingEmergenciesButton.getStyleClass().add("btn-primary");
+        VBox reportsCard = new VBox(14,
+                makeReportRow("All Emergencies Master Log", "Export full history of all submitted emergency incidents.", allEmergenciesButton),
+                makeReportRow("Pending Emergencies Only", "Export open, active, or in-progress emergency records.", pendingEmergenciesButton),
+                makeReportRow("Resolved Emergencies History", "Export historical records of all successfully resolved incidents.", resolvedEmergenciesButton),
+                makeReportRow("Resource Allocations Ledger", "Export all dispatch assignments, units, and active missions.", allocationReportButton),
+                makeReportRow("Fleet & Resource Inventory", "Export current status, capacity, and readiness of all response units.", resourceReportButton)
+        );
+        reportsCard.getStyleClass().add("card");
+        reportsCard.setPadding(new Insets(24));
 
-        resolvedEmergenciesButton = new Button("Generate CSV");
-        resolvedEmergenciesButton.getStyleClass().add("btn-primary");
+        contentBox.getChildren().addAll(messageLabel, reportsCard);
 
-        allocationReportButton = new Button("Generate CSV");
-        allocationReportButton.getStyleClass().add("btn-primary");
+        StackPane centerWrapper = new StackPane(contentBox);
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
+        centerWrapper.setStyle("-fx-background-color: #F8FAFC;");
 
-        resourceReportButton = new Button("Generate CSV");
-        resourceReportButton.getStyleClass().add("btn-primary");
-
-        GridPane grid = new GridPane();
-        grid.setHgap(14);
-        grid.setVgap(14);
-
-        VBox c1 = createCard("All Emergencies Report", "Full record of every reported incident.", allEmergenciesButton);
-        VBox c2 = createCard("Pending Incidents Report", "Incidents awaiting dispatch/resolution.", pendingEmergenciesButton);
-        VBox c3 = createCard("Resolved Incidents Report", "Successfully completed emergencies.", resolvedEmergenciesButton);
-        VBox c4 = createCard("Resource Allocation Report", "Ledger of unit assignments to incidents.", allocationReportButton);
-        VBox c5 = createCard("Fleet Inventory Report", "Current status of Ambulances, Trucks & Teams.", resourceReportButton);
-
-        GridPane.setHgrow(c1, Priority.ALWAYS);
-        GridPane.setHgrow(c2, Priority.ALWAYS);
-        GridPane.setHgrow(c3, Priority.ALWAYS);
-        GridPane.setHgrow(c4, Priority.ALWAYS);
-        GridPane.setHgrow(c5, Priority.ALWAYS);
-
-        grid.add(c1, 0, 0);
-        grid.add(c2, 1, 0);
-        grid.add(c3, 2, 0);
-        grid.add(c4, 0, 1);
-        grid.add(c5, 1, 1);
-
-        contentBox.getChildren().addAll(messageLabel, grid);
-
-        ScrollPane scroll = new ScrollPane(contentBox);
+        ScrollPane scroll = new ScrollPane(centerWrapper);
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;");
         root.setCenter(scroll);
     }
 
-    private VBox createCard(String title, String desc, Button btn) {
-        VBox card = new VBox(8);
-        card.getStyleClass().add("card");
-        card.setPadding(new Insets(16));
+    private Button createExportBtn() {
+        Button b = new Button("📥 Export CSV");
+        b.getStyleClass().add("btn-secondary");
+        return b;
+    }
 
-        Label t = new Label(title);
-        t.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0F172A;");
-
-        Label d = new Label(desc);
-        d.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748B;");
-        d.setWrapText(true);
-        VBox.setVgrow(d, Priority.ALWAYS);
-
-        btn.setMaxWidth(Double.MAX_VALUE);
-        card.getChildren().addAll(t, d, btn);
-        return card;
+    private HBox makeReportRow(String title, String desc, Button btn) {
+        Label t = new Label(title); t.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #1E293B;");
+        Label d = new Label(desc); d.setStyle("-fx-text-fill: #64748B; -fx-font-size: 11px;");
+        VBox texts = new VBox(2, t, d);
+        Region sp = new Region(); HBox.setHgrow(sp, Priority.ALWAYS);
+        HBox row = new HBox(12, texts, sp, btn);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(10, 0, 10, 0));
+        row.setStyle("-fx-border-color: #F1F5F9; -fx-border-width: 0 0 1 0;");
+        return row;
     }
 
     public Parent getView() { return root; }

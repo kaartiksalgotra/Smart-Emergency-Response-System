@@ -3,6 +3,7 @@ package com.emergency.views;
 import com.emergency.components.StatusIndicator;
 import com.emergency.model.Emergency;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Emergency Tracking View Component.
- * Displays real-time status of user's active emergencies.
+ * Real-time tracking view centered within a 1200px container with uniform button styling.
  */
 public class TrackEmergencyView {
 
@@ -28,11 +29,6 @@ public class TrackEmergencyView {
         root.setStyle("-fx-background-color: #F8FAFC;");
 
         // Top Header
-        HBox topBar = new HBox(16);
-        topBar.getStyleClass().add("top-header-bar");
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPrefHeight(60);
-
         backButton = new Button("← Return to Dashboard");
         backButton.getStyleClass().add("btn-back");
 
@@ -44,16 +40,22 @@ public class TrackEmergencyView {
 
         refreshButton = new Button("🔄 Refresh Records");
         refreshButton.getStyleClass().add("btn-primary");
-        refreshButton.setPrefHeight(36);
 
-        topBar.getChildren().addAll(backButton, heading, spacer, refreshButton);
+        HBox headerContent = new HBox(16, backButton, heading, spacer, refreshButton);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        headerContent.setMaxWidth(1200);
+        HBox.setHgrow(headerContent, Priority.ALWAYS);
+
+        HBox topBar = new HBox(headerContent);
+        topBar.getStyleClass().add("top-header-bar");
+        topBar.setAlignment(Pos.CENTER);
         root.setTop(topBar);
 
-        // Center Content
+        // Center Content Container (centered, max-width 1200px)
         VBox contentBox = new VBox(16);
-        contentBox.getStyleClass().add("content-pane");
+        contentBox.setMaxWidth(1200);
+        contentBox.setPadding(new Insets(24, 32, 28, 32));
 
-        // Status workflow pill
         Label workflowHint = new Label("Workflow: REQUESTED → ACCEPTED → ASSIGNED → IN PROGRESS → RESOLVED");
         workflowHint.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #64748B;");
 
@@ -117,7 +119,14 @@ public class TrackEmergencyView {
         tableCard.getChildren().addAll(workflowHint, emergencyTable);
         contentBox.getChildren().add(tableCard);
 
-        root.setCenter(contentBox);
+        StackPane centerWrapper = new StackPane(contentBox);
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
+        centerWrapper.setStyle("-fx-background-color: #F8FAFC;");
+
+        ScrollPane scroll = new ScrollPane(centerWrapper);
+        scroll.setFitToWidth(true);
+        scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;");
+        root.setCenter(scroll);
     }
 
     public BorderPane getView() { return root; }

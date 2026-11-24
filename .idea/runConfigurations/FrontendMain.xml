@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FrontendMain" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.emergency.FrontendMain" />
+    <module name="Smart-Emergency-Response-System" />
+    <option name="VM_PARAMETERS" value="--module-path &quot;$PROJECT_DIR$/lib/javafx-sdk&quot; --add-modules javafx.controls,javafx.fxml" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

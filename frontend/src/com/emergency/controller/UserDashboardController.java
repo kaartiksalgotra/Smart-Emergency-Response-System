@@ -81,6 +81,7 @@ public class UserDashboardController {
         myRequestsView.getRefreshButton().setOnAction(e -> {
             myRequestsView.setRequests(emergencyService.getEmergenciesByUserId(user.getUserId()));
         });
+        myRequestsView.getBackButton().setOnAction(e -> openDashboardHome());
         dashboardView.setContent(myRequestsView.getView());
         dashboardView.getSidebar().setActiveButton(dashboardView.getMyRequestsButton());
     }

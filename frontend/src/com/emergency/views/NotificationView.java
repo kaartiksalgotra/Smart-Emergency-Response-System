@@ -3,6 +3,7 @@ package com.emergency.views;
 import com.emergency.components.StatusIndicator;
 import com.emergency.model.Notification;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Notification Center View Component.
- * Displays system alerts, unit dispatches, and mark-as-read options.
+ * Polished layout centered within a 1200px max-width container with uniform buttons.
  */
 public class NotificationView {
 
@@ -28,11 +29,6 @@ public class NotificationView {
         root.setStyle("-fx-background-color: #F8FAFC;");
 
         // Top Header
-        HBox topBar = new HBox(16);
-        topBar.getStyleClass().add("top-header-bar");
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPrefHeight(60);
-
         backButton = new Button("← Return to Dashboard");
         backButton.getStyleClass().add("btn-back");
 
@@ -48,12 +44,23 @@ public class NotificationView {
         markReadButton = new Button("✓ Mark as Read");
         markReadButton.getStyleClass().add("btn-success");
 
-        topBar.getChildren().addAll(backButton, heading, spacer, refreshButton, markReadButton);
+        HBox actionGroup = new HBox(10, refreshButton, markReadButton);
+        actionGroup.setAlignment(Pos.CENTER_RIGHT);
+
+        HBox headerContent = new HBox(16, backButton, heading, spacer, actionGroup);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        headerContent.setMaxWidth(1200);
+        HBox.setHgrow(headerContent, Priority.ALWAYS);
+
+        HBox topBar = new HBox(headerContent);
+        topBar.getStyleClass().add("top-header-bar");
+        topBar.setAlignment(Pos.CENTER);
         root.setTop(topBar);
 
-        // Center Content
-        VBox contentBox = new VBox(14);
-        contentBox.getStyleClass().add("content-pane");
+        // Center Content Container (centered, max-width 1200px)
+        VBox contentBox = new VBox(16);
+        contentBox.setMaxWidth(1200);
+        contentBox.setPadding(new Insets(24, 32, 28, 32));
 
         VBox tableCard = new VBox(10);
         tableCard.getStyleClass().add("card");
@@ -99,31 +106,24 @@ public class NotificationView {
         readCol.setMaxWidth(100);
 
         notificationTable.getColumns().addAll(idCol, typeCol, msgCol, dateCol, readCol);
-        notificationTable.setPlaceholder(new Label("No notifications found."));
+        notificationTable.setPlaceholder(new Label("No notifications found. All alerts have been reviewed."));
 
         tableCard.getChildren().add(notificationTable);
         contentBox.getChildren().add(tableCard);
 
-        root.setCenter(contentBox);
+        StackPane centerWrapper = new StackPane(contentBox);
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
+        centerWrapper.setStyle("-fx-background-color: #F8FAFC;");
+
+        ScrollPane scroll = new ScrollPane(centerWrapper);
+        scroll.setFitToWidth(true);
+        scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;");
+        root.setCenter(scroll);
     }
 
-
-    public BorderPane getView() {
-        return root;
-    }
-
-    public TableView<Notification> getNotificationTable() {
-        return notificationTable;
-    }
-
-    public Button getRefreshButton() {
-        return refreshButton;
-    }
-
-    public Button getMarkReadButton() {
-        return markReadButton;
-    }
-
+    public BorderPane getView() { return root; }
+    public TableView<Notification> getNotificationTable() { return notificationTable; }
+    public Button getRefreshButton() { return refreshButton; }
+    public Button getMarkReadButton() { return markReadButton; }
     public Button getBackButton() { return backButton; }
-
 }

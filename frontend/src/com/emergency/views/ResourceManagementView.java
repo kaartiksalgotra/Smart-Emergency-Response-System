@@ -3,168 +3,143 @@ package com.emergency.views;
 import com.emergency.components.StatusIndicator;
 import com.emergency.model.Resource;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 /**
- * Resource Fleet Management View.
- * Add, update, view, and remove emergency vehicles and response teams.
+ * ERAS Resource & Fleet Management View.
+ * Centered 1200px container with uniform button styling and exact Resource model getters.
  */
 public class ResourceManagementView {
-
     private BorderPane root;
     private TableView<Resource> resourceTable;
-
-    private TextField nameField;
-    private TextField contactField;
-    private TextField locationField;
-    private TextField detailsField;
+    private TextField nameField, contactField, locationField, detailsField;
     private ComboBox<String> typeBox;
-
-    private Button addButton;
-    private Button updateButton;
-    private Button removeButton;
-    private Button refreshButton;
-    private Button backButton;
-
+    private Button addButton, updateButton, removeButton, refreshButton, backButton;
     private Label messageLabel;
 
     public ResourceManagementView() {
         root = new BorderPane();
         root.setStyle("-fx-background-color: #F8FAFC;");
 
-        // Top Header
-        HBox topBar = new HBox(16);
-        topBar.getStyleClass().add("top-header-bar");
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPrefHeight(60);
-
-        backButton = new Button("← Return to Dashboard");
+        // Header
+        backButton = new Button("← Back to Dashboard");
         backButton.getStyleClass().add("btn-back");
 
         Label heading = new Label("Resource & Fleet Management");
         heading.getStyleClass().add("top-header-title");
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label adminPill = new Label("Admin View");
+        adminPill.setStyle("-fx-background-color: #DBEAFE; -fx-text-fill: #2563EB; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 12px; -fx-font-size: 11px;");
 
         refreshButton = new Button("🔄 Refresh Fleet");
         refreshButton.getStyleClass().add("btn-primary");
-        refreshButton.setPrefHeight(36);
 
-        topBar.getChildren().addAll(backButton, heading, spacer, refreshButton);
+        HBox headerContent = new HBox(16, backButton, heading, spacer, adminPill, refreshButton);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        headerContent.setMaxWidth(1200);
+        HBox.setHgrow(headerContent, Priority.ALWAYS);
+
+        HBox topBar = new HBox(headerContent);
+        topBar.getStyleClass().add("top-header-bar");
+        topBar.setAlignment(Pos.CENTER);
         root.setTop(topBar);
 
-        // Center Content (Split Table + Form)
-        VBox contentBox = new VBox(16);
-        contentBox.getStyleClass().add("content-pane");
+        // Center Content (centered, max-width 1200px)
+        HBox split = new HBox(18, buildTableCard(), buildFormCard());
+        split.setMaxWidth(1200);
+        split.setPadding(new Insets(24, 32, 28, 32));
 
-        HBox splitLayout = new HBox(16);
+        StackPane centerWrapper = new StackPane(split);
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
+        centerWrapper.setStyle("-fx-background-color: #F8FAFC;");
 
-        // Table Card
-        VBox tableCard = new VBox(10);
-        tableCard.getStyleClass().add("card");
-        HBox.setHgrow(tableCard, Priority.ALWAYS);
+        ScrollPane scroll = new ScrollPane(centerWrapper);
+        scroll.setFitToWidth(true);
+        scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;");
+        root.setCenter(scroll);
+    }
 
+    private VBox buildTableCard() {
         resourceTable = new TableView<>();
-        resourceTable.setPrefHeight(450);
+        resourceTable.setPrefHeight(480);
         resourceTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<Resource, String> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(d -> new SimpleStringProperty("#" + d.getValue().getResourceId()));
         idCol.setMaxWidth(60);
 
-        TableColumn<Resource, String> nameCol = new TableColumn<>("Unit Name");
+        TableColumn<Resource, String> nameCol = new TableColumn<>("UNIT NAME");
         nameCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getResourceName()));
 
-        TableColumn<Resource, String> typeCol = new TableColumn<>("Type");
+        TableColumn<Resource, String> typeCol = new TableColumn<>("TYPE");
         typeCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getResourceType().toString()));
 
-        TableColumn<Resource, String> contactCol = new TableColumn<>("Contact");
+        TableColumn<Resource, String> contactCol = new TableColumn<>("CONTACT");
         contactCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getContactNumber()));
 
-        TableColumn<Resource, String> locCol = new TableColumn<>("Location");
+        TableColumn<Resource, String> locCol = new TableColumn<>("BASE");
         locCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getLocation()));
 
-        TableColumn<Resource, String> statusCol = new TableColumn<>("Status");
-        statusCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getResourceStatus().toString()));
-        statusCol.setCellFactory(c -> new TableCell<Resource, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
+        TableColumn<Resource, String> stCol = new TableColumn<>("STATUS");
+        stCol.setCellFactory(c -> new TableCell<Resource, String>() {
+            @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setGraphic(null); setText(null);
-                } else {
-                    Resource res = (Resource) getTableRow().getItem();
-                    setGraphic(StatusIndicator.createResourceStatusBadge(res.getResourceStatus()));
-                    setText(null); setAlignment(Pos.CENTER);
-                }
+                Resource r = (empty || getTableRow() == null) ? null : (Resource) getTableRow().getItem();
+                setGraphic(r != null ? StatusIndicator.createResourceStatusBadge(r.getResourceStatus()) : null);
+                setText(null); setAlignment(Pos.CENTER);
             }
         });
 
-        resourceTable.getColumns().addAll(idCol, nameCol, typeCol, contactCol, locCol, statusCol);
-        tableCard.getChildren().addAll(new Label("Active Resource Units"), resourceTable);
+        resourceTable.getColumns().addAll(idCol, nameCol, typeCol, contactCol, locCol, stCol);
 
-        // Form Card
-        VBox formCard = new VBox(10);
-        formCard.getStyleClass().add("card");
-        formCard.setPrefWidth(350);
+        VBox card = new VBox(10, new Label("Fleet Inventory") {{ setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1E293B;"); }}, resourceTable);
+        card.getStyleClass().add("card");
+        card.setPadding(new Insets(18));
+        HBox.setHgrow(card, Priority.ALWAYS);
+        return card;
+    }
 
-        nameField = new TextField();
-        nameField.setPromptText("Resource name");
+    private VBox buildFormCard() {
+        nameField = new TextField(); nameField.setPromptText("Resource name"); nameField.setPrefHeight(38);
+        contactField = new TextField(); contactField.setPromptText("Contact number"); contactField.setPrefHeight(38);
+        locationField = new TextField(); locationField.setPromptText("Station location"); locationField.setPrefHeight(38);
+        detailsField = new TextField(); detailsField.setPromptText("Capacity / Crew members (e.g. 4)"); detailsField.setPrefHeight(38);
 
         typeBox = new ComboBox<>();
         typeBox.getItems().addAll("AMBULANCE", "FIRE_TRUCK", "RESCUE_TEAM");
         typeBox.setPromptText("Select Resource Type");
         typeBox.setMaxWidth(Double.MAX_VALUE);
+        typeBox.setPrefHeight(38);
 
-        contactField = new TextField();
-        contactField.setPromptText("Contact number");
+        addButton = new Button("+ Add Unit"); addButton.getStyleClass().add("btn-primary"); addButton.setPrefHeight(38);
+        updateButton = new Button("✎ Update"); updateButton.getStyleClass().add("btn-secondary"); updateButton.setPrefHeight(38);
+        removeButton = new Button("✕ Remove"); removeButton.getStyleClass().add("btn-danger"); removeButton.setPrefHeight(38);
+        HBox btnRow = new HBox(8, addButton, updateButton, removeButton);
 
-        locationField = new TextField();
-        locationField.setPromptText("Station location");
+        messageLabel = new Label(""); messageLabel.setWrapText(true); messageLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: bold;");
 
-        detailsField = new TextField();
-        detailsField.setPromptText("Capacity / Crew members (e.g. 4)");
-
-        addButton = new Button("+ Add Unit");
-        addButton.getStyleClass().add("btn-success");
-        HBox.setHgrow(addButton, Priority.ALWAYS);
-        addButton.setMaxWidth(Double.MAX_VALUE);
-
-        updateButton = new Button("💾 Update");
-        updateButton.getStyleClass().add("btn-primary");
-        HBox.setHgrow(updateButton, Priority.ALWAYS);
-        updateButton.setMaxWidth(Double.MAX_VALUE);
-
-        removeButton = new Button("🗑 Remove");
-        removeButton.getStyleClass().add("btn-outline-danger");
-        HBox.setHgrow(removeButton, Priority.ALWAYS);
-        removeButton.setMaxWidth(Double.MAX_VALUE);
-
-        HBox btnRow = new HBox(6, addButton, updateButton, removeButton);
-
-        messageLabel = new Label();
-        messageLabel.setWrapText(true);
-        messageLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 11px;");
-
-        formCard.getChildren().addAll(
-                new Label("Unit Specifications"),
-                new Label("Fill details to add or select from table to modify:"),
-                new VBox(2, new Label("Name:"), nameField),
-                new VBox(2, new Label("Type:"), typeBox),
-                new VBox(2, new Label("Contact:"), contactField),
-                new VBox(2, new Label("Location:"), locationField),
-                new VBox(2, new Label("Capacity / Crew Count:"), detailsField),
-                btnRow,
-                messageLabel
+        VBox form = new VBox(10,
+                new Label("Unit Editor") {{ setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1E293B;"); }},
+                new VBox(4, makeLbl("Unit Name"), nameField),
+                new VBox(4, makeLbl("Unit Type"), typeBox),
+                new VBox(4, makeLbl("Contact Number"), contactField),
+                new VBox(4, makeLbl("Base Location"), locationField),
+                new VBox(4, makeLbl("Capacity / Crew Count"), detailsField),
+                btnRow, messageLabel
         );
+        form.setPrefWidth(320);
+        form.getStyleClass().add("card");
+        form.setPadding(new Insets(18));
+        return form;
+    }
 
-        splitLayout.getChildren().addAll(tableCard, formCard);
-        contentBox.getChildren().add(splitLayout);
-
-        root.setCenter(contentBox);
+    private Label makeLbl(String text) {
+        Label l = new Label(text); l.getStyleClass().add("field-label"); return l;
     }
 
     public BorderPane getView() { return root; }
