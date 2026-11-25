@@ -17,7 +17,6 @@ public class AdminDashboardController {
     private EmergencyService emergencyService;
     private ResourceService resourceService;
     private AllocationService allocationService;
-    private ReportService reportService;
     private DashboardService dashboardService;
     private NotificationService notificationService;
     private EmergencyProcessor emergencyProcessor;
@@ -25,7 +24,7 @@ public class AdminDashboardController {
     public AdminDashboardController(
             AdminDashboardView dashboardView, User admin, EmergencyService emergencyService,
             ResourceService resourceService, AllocationService allocationService,
-            ReportService reportService, DashboardService dashboardService,
+            DashboardService dashboardService,
             NotificationService notificationService, EmergencyProcessor emergencyProcessor,
             Runnable logoutAction) {
 
@@ -33,7 +32,6 @@ public class AdminDashboardController {
         this.emergencyService = emergencyService;
         this.resourceService = resourceService;
         this.allocationService = allocationService;
-        this.reportService = reportService;
         this.dashboardService = dashboardService;
         this.notificationService = notificationService;
         this.emergencyProcessor = emergencyProcessor;
@@ -43,11 +41,9 @@ public class AdminDashboardController {
 
         dashboardView.getDashboardButton().setOnAction(e -> openDashboardHome());
         dashboardView.getIncomingRequestsButton().setOnAction(e -> openIncomingRequests());
-        dashboardView.getPriorityQueueButton().setOnAction(e -> openPriorityQueue());
         dashboardView.getManageResourcesButton().setOnAction(e -> openManageResources());
         dashboardView.getAllocationButton().setOnAction(e -> openAllocation());
         dashboardView.getMonitorEmergencyButton().setOnAction(e -> openMonitoring());
-        dashboardView.getReportsButton().setOnAction(e -> openReports());
         dashboardView.getRefreshButton().setOnAction(e -> refreshDashboard());
         dashboardView.getLogoutButton().setOnAction(e -> logoutAction.run());
 
@@ -86,24 +82,6 @@ public class AdminDashboardController {
 
         dashboardView.setContent(view.getView());
         dashboardView.getSidebar().setActiveButton(dashboardView.getIncomingRequestsButton());
-    }
-
-    private void openPriorityQueue() {
-        PriorityQueueView queueView = new PriorityQueueView();
-        Runnable load = () -> {
-            if (emergencyProcessor != null && emergencyProcessor.getEmergencyQueue() != null) {
-                for (Emergency em : emergencyService.getRequestedEmergencies()) {
-                    emergencyProcessor.getEmergencyQueue().addEmergency(em);
-                }
-                queueView.setQueueList(emergencyProcessor.getEmergencyQueue().getQueueAsSortedList());
-            } else {
-                queueView.setQueueList(emergencyService.getRequestedEmergencies());
-            }
-        };
-        load.run();
-        queueView.getRefreshButton().setOnAction(e -> load.run());
-        dashboardView.setContent(queueView.getView());
-        dashboardView.getSidebar().setActiveButton(dashboardView.getPriorityQueueButton());
     }
 
     private void openAllocation() {
@@ -174,13 +152,6 @@ public class AdminDashboardController {
         new ResourceManagementController(view, resourceService, this::openDashboardHome);
         dashboardView.setContent(view.getView());
         dashboardView.getSidebar().setActiveButton(dashboardView.getManageResourcesButton());
-    }
-
-    private void openReports() {
-        ReportsView view = new ReportsView();
-        new ReportsController(view, reportService, this::openDashboardHome);
-        dashboardView.setContent(view.getView());
-        dashboardView.getSidebar().setActiveButton(dashboardView.getReportsButton());
     }
 
     private void refreshDashboard() {

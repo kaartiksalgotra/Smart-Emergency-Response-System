@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class UserDashboardView {
     private BorderPane root;
     private Sidebar sidebar;
-    private Button dashboardButton, reportEmergencyButton, myRequestsButton, trackEmergencyButton, historyButton, notificationButton, quickReportButton;
+    private Button dashboardButton, reportEmergencyButton, myEmergenciesButton, notificationButton, quickReportButton;
     private Label welcomeLabel, notifBadgeLabel, totalVal, pendingVal, resolvedVal, unreadVal;
     private TableView<Emergency> recentActivityTable;
     private VBox bodyBox;
@@ -30,9 +30,9 @@ public class UserDashboardView {
         root = new BorderPane(); root.setStyle("-fx-background-color: #F8FAFC;");
         sidebar = new Sidebar("Citizen User", "RESIDENT");
         dashboardButton = new Button("Dashboard"); reportEmergencyButton = new Button("Report Emergency");
-        myRequestsButton = new Button("My Requests"); trackEmergencyButton = new Button("Track Emergency");
-        historyButton = new Button("History"); notificationButton = new Button("Notifications");
-        for (Button b : new Button[]{dashboardButton, reportEmergencyButton, myRequestsButton, trackEmergencyButton, historyButton, notificationButton}) {
+        myEmergenciesButton = new Button("My Emergencies");
+        notificationButton = new Button("Notifications");
+        for (Button b : new Button[]{dashboardButton, reportEmergencyButton, myEmergenciesButton, notificationButton}) {
             sidebar.addNavButton(b);
         }
         sidebar.setActiveButton(dashboardButton); root.setTop(sidebar);
@@ -174,8 +174,8 @@ public class UserDashboardView {
 
     public Parent getView() { return root; } public Sidebar getSidebar() { return sidebar; } public Label getWelcomeLabel() { return welcomeLabel; }
     public TableView<Emergency> getRecentActivityTable() { return recentActivityTable; } public Button getDashboardButton() { return dashboardButton; }
-    public Button getReportEmergencyButton() { return reportEmergencyButton; } public Button getMyRequestsButton() { return myRequestsButton; }
-    public Button getTrackEmergencyButton() { return trackEmergencyButton; } public Button getHistoryButton() { return historyButton; }
-    public Button getNotificationButton() { return notificationButton; } public Button getQuickReportButton() { return quickReportButton; }
-    public Button getLogoutButton() { return sidebar.getLogoutButton(); }
+    public Button getReportEmergencyButton() { return reportEmergencyButton; } public Button getMyEmergenciesButton() { return myEmergenciesButton; }
+    public Button getMyRequestsButton() { return myEmergenciesButton; } public Button getTrackEmergencyButton() { return myEmergenciesButton; }
+    public Button getHistoryButton() { return myEmergenciesButton; } public Button getNotificationButton() { return notificationButton; }
+    public Button getQuickReportButton() { return quickReportButton; } public Button getLogoutButton() { return sidebar.getLogoutButton(); }
 }

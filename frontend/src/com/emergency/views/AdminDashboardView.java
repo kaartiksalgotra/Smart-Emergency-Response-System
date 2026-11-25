@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class AdminDashboardView {
     private BorderPane root;
     private Sidebar sidebar;
-    private Button dashboardButton, incomingRequestsButton, priorityQueueButton, manageResourcesButton, allocationButton, monitorEmergencyButton, reportsButton, refreshButton;
+    private Button dashboardButton, incomingRequestsButton, manageResourcesButton, allocationButton, monitorEmergencyButton, refreshButton;
     private Label totalVal, requestedVal, readinessVal, avgResponseVal;
     private Label medCountLabel, fireCountLabel, resCountLabel, otherCountLabel;
     private TableView<Emergency> emergencyTable;
@@ -31,10 +31,9 @@ public class AdminDashboardView {
         root = new BorderPane(); root.setStyle("-fx-background-color: #F8FAFC;");
         sidebar = new Sidebar("System Administrator", "ADMINISTRATOR");
         dashboardButton = new Button("Dashboard"); incomingRequestsButton = new Button("Incoming Requests");
-        priorityQueueButton = new Button("Priority Queue"); manageResourcesButton = new Button("Resource Management");
+        manageResourcesButton = new Button("Resource Management");
         allocationButton = new Button("Resource Allocation"); monitorEmergencyButton = new Button("Monitor Emergencies");
-        reportsButton = new Button("Reports & Analytics");
-        for (Button b : new Button[]{dashboardButton, incomingRequestsButton, priorityQueueButton, manageResourcesButton, allocationButton, monitorEmergencyButton, reportsButton}) {
+        for (Button b : new Button[]{dashboardButton, incomingRequestsButton, manageResourcesButton, allocationButton, monitorEmergencyButton}) {
             sidebar.addNavButton(b);
         }
         sidebar.setActiveButton(dashboardButton); root.setTop(sidebar);
@@ -187,8 +186,8 @@ public class AdminDashboardView {
 
     public Parent getView() { return root; } public Sidebar getSidebar() { return sidebar; } public TableView<Emergency> getEmergencyTable() { return emergencyTable; }
     public Button getDashboardButton() { return dashboardButton; } public Button getIncomingRequestsButton() { return incomingRequestsButton; }
-    public Button getPriorityQueueButton() { return priorityQueueButton; } public Button getManageResourcesButton() { return manageResourcesButton; }
+    public Button getManageResourcesButton() { return manageResourcesButton; }
     public Button getAllocationButton() { return allocationButton; } public Button getMonitorEmergencyButton() { return monitorEmergencyButton; }
-    public Button getReportsButton() { return reportsButton; } public Button getRefreshButton() { return refreshButton; }
+    public Button getRefreshButton() { return refreshButton; }
     public Button getLogoutButton() { return sidebar.getLogoutButton(); }
 }

@@ -26,7 +26,6 @@ public class FrontendMain extends Application {
     private ResourceService resourceService;
     private AllocationService allocationService;
     private NotificationService notificationService;
-    private ReportService reportService;
     private DashboardService dashboardService;
 
     private EmergencyQueue emergencyQueue;
@@ -46,7 +45,6 @@ public class FrontendMain extends Application {
         resourceService = new ResourceService(resourceStorage);
         allocationService = new AllocationService(emergencyStorage, resourceStorage, allocationStorage);
         notificationService = new NotificationService(notificationStorage);
-        reportService = new ReportService(emergencyStorage, resourceStorage, allocationStorage);
         dashboardService = new DashboardService(emergencyStorage, resourceStorage);
 
         emergencyQueue = new EmergencyQueue();
@@ -62,7 +60,7 @@ public class FrontendMain extends Application {
         new LoginController(
                 loginView, authenticationService, userService, stage, emergencyService,
                 resourceService, allocationService, notificationService,
-                reportService, dashboardService, emergencyProcessor
+                dashboardService, emergencyProcessor
         );
 
         Scene scene = new Scene(loginView.getView(), 960, 640);

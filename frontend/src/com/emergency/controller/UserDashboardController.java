@@ -50,9 +50,7 @@ public class UserDashboardController {
         if (dashboardView.getQuickReportButton() != null) {
             dashboardView.getQuickReportButton().setOnAction(e -> openReportEmergency());
         }
-        dashboardView.getMyRequestsButton().setOnAction(e -> openMyRequests());
-        dashboardView.getTrackEmergencyButton().setOnAction(e -> openTrackEmergency());
-        dashboardView.getHistoryButton().setOnAction(e -> openEmergencyHistory());
+        dashboardView.getMyEmergenciesButton().setOnAction(e -> openMyEmergencies());
         dashboardView.getNotificationButton().setOnAction(e -> openNotifications());
         dashboardView.getLogoutButton().setOnAction(e -> logoutAction.run());
 
@@ -74,34 +72,28 @@ public class UserDashboardController {
         dashboardView.getSidebar().setActiveButton(dashboardView.getReportEmergencyButton());
     }
 
-    private void openMyRequests() {
-        MyRequestsView myRequestsView = new MyRequestsView();
+    private void openMyEmergencies() {
+        MyEmergenciesView emergenciesView = new MyEmergenciesView();
         ArrayList<Emergency> requests = emergencyService.getEmergenciesByUserId(user.getUserId());
-        myRequestsView.setRequests(requests);
-        myRequestsView.getRefreshButton().setOnAction(e -> {
-            myRequestsView.setRequests(emergencyService.getEmergenciesByUserId(user.getUserId()));
+        emergenciesView.setData(requests);
+        emergenciesView.getRefreshButton().setOnAction(e -> {
+            emergenciesView.setData(emergencyService.getEmergenciesByUserId(user.getUserId()));
         });
-        myRequestsView.getBackButton().setOnAction(e -> openDashboardHome());
-        dashboardView.setContent(myRequestsView.getView());
-        dashboardView.getSidebar().setActiveButton(dashboardView.getMyRequestsButton());
+        emergenciesView.getBackButton().setOnAction(e -> openDashboardHome());
+        dashboardView.setContent(emergenciesView.getView());
+        dashboardView.getSidebar().setActiveButton(dashboardView.getMyEmergenciesButton());
+    }
+
+    private void openMyRequests() {
+        openMyEmergencies();
     }
 
     private void openTrackEmergency() {
-        TrackEmergencyView trackView = new TrackEmergencyView();
-        new TrackEmergencyController(
-                trackView, emergencyService, user, getStage(), this::openDashboardHome
-        );
-        dashboardView.setContent(trackView.getView());
-        dashboardView.getSidebar().setActiveButton(dashboardView.getTrackEmergencyButton());
+        openMyEmergencies();
     }
 
     private void openEmergencyHistory() {
-        EmergencyHistoryView historyView = new EmergencyHistoryView();
-        new EmergencyHistoryController(
-                historyView, emergencyService, user, this::openDashboardHome
-        );
-        dashboardView.setContent(historyView.getView());
-        dashboardView.getSidebar().setActiveButton(dashboardView.getHistoryButton());
+        openMyEmergencies();
     }
 
     private void openNotifications() {

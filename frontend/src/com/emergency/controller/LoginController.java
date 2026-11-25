@@ -18,7 +18,6 @@ public class LoginController {
     private ResourceService resourceService;
     private AllocationService allocationService;
     private NotificationService notificationService;
-    private ReportService reportService;
     private DashboardService dashboardService;
     private EmergencyProcessor emergencyProcessor;
 
@@ -26,7 +25,7 @@ public class LoginController {
             LoginView loginView, AuthenticationService authenticationService, UserService userService,
             Stage stage, EmergencyService emergencyService, ResourceService resourceService,
             AllocationService allocationService, NotificationService notificationService,
-            ReportService reportService, DashboardService dashboardService,
+            DashboardService dashboardService,
             EmergencyProcessor emergencyProcessor) {
 
         this.loginView = loginView;
@@ -37,7 +36,6 @@ public class LoginController {
         this.resourceService = resourceService;
         this.allocationService = allocationService;
         this.notificationService = notificationService;
-        this.reportService = reportService;
         this.dashboardService = dashboardService;
         this.emergencyProcessor = emergencyProcessor;
 
@@ -91,7 +89,7 @@ public class LoginController {
         AdminDashboardView view = new AdminDashboardView();
         new AdminDashboardController(
                 view, admin, emergencyService, resourceService, allocationService,
-                reportService, dashboardService, notificationService, emergencyProcessor,
+                dashboardService, notificationService, emergencyProcessor,
                 this::openLoginPage
         );
 
@@ -117,7 +115,7 @@ public class LoginController {
         LoginView newView = new LoginView();
         new LoginController(
                 newView, authenticationService, userService, stage, emergencyService,
-                resourceService, allocationService, notificationService, reportService,
+                resourceService, allocationService, notificationService,
                 dashboardService, emergencyProcessor
         );
         Scene scene = new Scene(newView.getView(), 960, 640);

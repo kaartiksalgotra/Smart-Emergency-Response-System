@@ -13,7 +13,6 @@ import com.emergency.service.EmergencyService;
 import com.emergency.service.ResourceService;
 import com.emergency.service.AllocationService;
 import com.emergency.service.NotificationService;
-import com.emergency.service.ReportService;
 import com.emergency.service.DashboardService;
 
 import com.emergency.threading.EmergencyQueue;
@@ -66,13 +65,6 @@ public class Main {
         NotificationService notificationService =
                 new NotificationService(notificationStorage);
 
-        ReportService reportService =
-                new ReportService(
-                        emergencyStorage,
-                        resourceStorage,
-                        allocationStorage
-                );
-
         DashboardService dashboardService =
                 new DashboardService(
                         emergencyStorage,
@@ -107,7 +99,6 @@ public class Main {
         System.out.println("Resource Service: Ready");
         System.out.println("Allocation Service: Ready");
         System.out.println("Notification Service: Ready");
-        System.out.println("Report Service: Ready");
         System.out.println("Dashboard Service: Ready");
 
         System.out.println("Emergency Queue: Ready");
