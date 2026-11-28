@@ -1,0 +1,32 @@
+# Build output and IDE temporary files
+out/
+target/
+*.class
+reports/
+
+# IntelliJ user-specific files (never commit)
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+.idea/**/contentModel.xml
+.idea/.gitignore
+
+# Whitelist shared IntelliJ project configuration
+!.idea/
+!.idea/modules.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+!.idea/libraries/
+!.idea/libraries/*.xml
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml
+!Smart-Emergency-Response-System.iml
+
+# Bundled libraries (essential for 1-click execution)
+!lib/
+!lib/*.jar
+!lib/**/*.jar
+db.properties
+*.class
+.DS_Store
